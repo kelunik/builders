@@ -1,0 +1,76 @@
+#!/usr/bin/env php
+<?php
+
+use HaydenPierce\ClassFinder\ClassFinder;
+use Kelunik\Builders\BuilderGenerator;
+use Roave\BetterReflection\BetterReflection;
+use Roave\BetterReflection\Reflector\ClassReflector;
+use Roave\BetterReflection\SourceLocator\Type\ComposerSourceLocator;
+
+$classLoader = (function () {
+    $paths = [
+        dirname(__DIR__, 3) . "/autoload.php",
+        dirname(__DIR__) . "/vendor/autoload.php",
+    ];
+
+    foreach ($paths as $path) {
+        if (file_exists($path)) {
+            $autoloadPath = $path;
+            break;
+        }
+    }
+
+    if (!isset($autoloadPath)) {
+        fwrite(STDERR, "Could not locate autoload.php" . PHP_EOL);
+        exit(1);
+    }
+
+    return require $autoloadPath;
+})();
+
+if ($argc !== 4) {
+    fwrite(STDERR, "Usage: builder-generator App App\\Value src-generated" . PHP_EOL);
+    fwrite(STDERR, "                         \-- Root namespace" . PHP_EOL);
+    fwrite(STDERR, "                             \-- Value namespace" . PHP_EOL);
+    fwrite(STDERR, "                                        \-- Directory" . PHP_EOL);
+    exit(1);
+}
+
+[, $rootNamespace, $valueNamespace, $targetDirectory] = $argv;
+
+try {
+    $classes = ClassFinder::getClassesInNamespace($valueNamespace);
+} catch (Exception $e) {
+    fwrite(STDERR, "Could not scan classes: " . $e->getMessage() . PHP_EOL);
+    exit(1);
+}
+
+$betterReflection = new BetterReflection;
+$astLocator = $betterReflection->astLocator();
+
+foreach ($classes as $class) {
+    $reflector = new ClassReflector(new ComposerSourceLocator($classLoader, $astLocator));
+    $reflectionClass = $reflector->reflect($class);
+
+    $builderGenerator = new BuilderGenerator($reflectionClass);
+    if (!$builderGenerator->shouldGenerateBuilder()) {
+        continue;
+    }
+
+    $source = $builderGenerator->generate();
+
+    $splitName = \explode('\\', $builderGenerator->getBuilderName());
+    $simpleName = \array_slice($splitName, -1)[0];
+    $namespace = \implode('\\', \array_slice($splitName, 0, -1));
+
+    $subNamespace = \substr($namespace, \strlen($rootNamespace)) ?: '';
+    $filePath = \str_replace('\\', DIRECTORY_SEPARATOR, $subNamespace);
+    $filePath = \rtrim($targetDirectory, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . \ltrim($filePath . DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR) . $simpleName . '.php';
+
+    if (!\is_dir(\dirname($filePath)) && !\mkdir(\dirname($filePath), 0775, true) && !\is_dir(\dirname($filePath))) {
+        throw new \RuntimeException(sprintf('Directory "%s" was not created', \dirname($filePath)));
+    }
+
+    \file_put_contents($filePath, $source);
+}
+

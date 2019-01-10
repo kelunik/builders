@@ -1,0 +1,38 @@
+{
+    "name": "kelunik/builders",
+    "type": "library",
+    "require": {
+        "nette/php-generator": "^3.2",
+        "roave/better-reflection": "^3.2",
+        "haydenpierce/class-finder": "^0.2.0"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Niklas Keller",
+            "email": "me@kelunik.com"
+        }
+    ],
+    "require-dev": {
+        "phpunit/phpunit": "^7.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "Kelunik\\Builders\\": "src"
+        },
+        "files": [
+            "src/functions.php"
+        ]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Example\\": [
+                "example",
+                "example-generated"
+            ]
+        },
+        "files": [
+            "example/builders.php"
+        ]
+    }
+}
