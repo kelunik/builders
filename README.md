@@ -83,7 +83,7 @@ class UserBuilderMethods implements \Kelunik\Builders\Builder
 }
 ```
 
-## Custom Builder Methods
+### Custom Builder Methods
 
 In order to use the generated classes, you're advised to create a `UserBuilder` object that extends the generated `UserBuilderMethods`.
 This separation allow you to add custom builder methods without affecting the builder generator when it throws away the old `UserBuilderMethods` and generates a new one.
