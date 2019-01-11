@@ -1,10 +1,10 @@
 {
     "name": "kelunik/builders",
+    "description": "Generating builders for value objects.",
     "type": "library",
     "require": {
         "nette/php-generator": "^3.2",
-        "roave/better-reflection": "^3.2",
-        "haydenpierce/class-finder": "^0.2.0"
+        "roave/better-reflection": "^3.2"
     },
     "license": "MIT",
     "authors": [
