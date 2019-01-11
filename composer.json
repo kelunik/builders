@@ -34,5 +34,6 @@
         "files": [
             "example/builders.php"
         ]
-    }
+    },
+    "bin": ["bin/builder-generator"]
 }
