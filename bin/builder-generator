@@ -1,7 +1,6 @@
 #!/usr/bin/env php
 <?php
 
-use HaydenPierce\ClassFinder\ClassFinder;
 use Kelunik\Builders\BuilderGenerator;
 use Roave\BetterReflection\BetterReflection;
 use Roave\BetterReflection\Reflector\ClassReflector;
