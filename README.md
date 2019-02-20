@@ -5,7 +5,7 @@ This packages allows generating builders for value objects automatically. One us
 ## Installation
 
 ```
-composer install kelunik/builders
+composer require kelunik/builders
 ```
 
 ## Usage
