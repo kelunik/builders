@@ -3,6 +3,7 @@
     "description": "Generating builders for value objects.",
     "type": "library",
     "require": {
+        "php": "^7.1",
         "nette/php-generator": "^3.2",
         "roave/better-reflection": "^3.2"
     },
