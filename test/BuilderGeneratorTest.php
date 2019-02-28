@@ -22,7 +22,7 @@ class BuilderGeneratorTest extends TestCase
     /** @var string */
     private $result;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->reflection = new BetterReflection;
     }
@@ -31,7 +31,7 @@ class BuilderGeneratorTest extends TestCase
     {
         $this->givenSource('Foo', <<<SOURCE
             <?php
-            
+
             class Foo {
                 public \$bar;
             }
@@ -99,7 +99,7 @@ SOURCE
     {
         $this->givenSource('Foo', <<<SOURCE
             <?php
-            
+
             class Foo {
                 /** @var string */
                 public \$bar;
@@ -142,7 +142,7 @@ SOURCE
     {
         $this->givenSource('Foo', <<<SOURCE
             <?php
-            
+
             class Foo {
                 /** @var string|null */
                 public \$bar;
@@ -185,7 +185,7 @@ SOURCE
     {
         $this->givenSource('Foo', <<<SOURCE
             <?php
-            
+
             class Foo {
                 private \$bar;
             }
@@ -220,7 +220,7 @@ SOURCE
     {
         $this->givenSource('App\\Foo', <<<SOURCE
 <?php
-            
+
 namespace App;
 
 class Foo {}
@@ -259,10 +259,10 @@ SOURCE
     {
         $this->givenSource('Foo', <<<SOURCE
             <?php
-            
+
             class Foo {
                 private \$bar;
-                
+
                 public function setBar(string \$bar): void
                 {
                     \$this->bar = \$bar;
@@ -306,10 +306,10 @@ SOURCE
     {
         $this->givenSource('Foo', <<<SOURCE
             <?php
-            
+
             class Foo {
                 private \$bar;
-                
+
                 public function setBar(?string \$bar): void
                 {
                     \$this->bar = \$bar;
@@ -358,7 +358,7 @@ namespace App;
 
 class Foo {
     private \$bar;
-    
+
     public function setBar(?string \$bar): void
     {
         \$this->bar = \$bar;
@@ -406,10 +406,10 @@ SOURCE
     {
         $this->givenSource('Foo', <<<SOURCE
             <?php
-            
+
             class Foo {
                 private \$bar;
-                
+
                 public function setBar(?string \$bar = 'foo'): void
                 {
                     \$this->bar = \$bar;
@@ -453,12 +453,12 @@ SOURCE
     {
         $this->givenSource('Foo', <<<SOURCE
             <?php
-            
+
             class Foo {
-                const X = 'Y';            
+                const X = 'Y';
 
                 private \$bar;
-                
+
                 public function setBar(?string \$bar = self::X): void
                 {
                     \$this->bar = \$bar;
@@ -503,12 +503,12 @@ SOURCE
         // TODO: This should error in a future version, because the constant can't be reused in the builder
         $this->givenSource('Foo', <<<SOURCE
             <?php
-            
+
             class Foo {
-                private const X = 'Y';            
+                private const X = 'Y';
 
                 private \$bar;
-                
+
                 public function setBar(?string \$bar = self::X): void
                 {
                     \$this->bar = \$bar;
