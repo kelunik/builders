@@ -4,6 +4,8 @@
 use Kelunik\Builders\BuilderGenerator;
 use Roave\BetterReflection\BetterReflection;
 use Roave\BetterReflection\Reflector\ClassReflector;
+use Roave\BetterReflection\SourceLocator\Type\AggregateSourceLocator;
+use Roave\BetterReflection\SourceLocator\Type\ComposerSourceLocator;
 use Roave\BetterReflection\SourceLocator\Type\DirectoriesSourceLocator;
 
 $rootPath = '';
@@ -41,7 +43,12 @@ $betterReflection = new BetterReflection;
 $astLocator = $betterReflection->astLocator();
 
 $directoriesSourceLocator = new DirectoriesSourceLocator([$sourceDirectory], $astLocator);
-$reflector = new ClassReflector($directoriesSourceLocator);
+$sourceLocator = new AggregateSourceLocator([
+    $directoriesSourceLocator,
+    new ComposerSourceLocator($classLoader, $astLocator),
+]);
+
+$reflector = new ClassReflector($sourceLocator);
 $classes = $reflector->getAllClasses();
 
 foreach ($classes as $class) {
@@ -73,4 +80,3 @@ foreach ($classes as $class) {
 
     \file_put_contents($targetFile, $source);
 }
-
