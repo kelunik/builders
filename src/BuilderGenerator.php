@@ -9,6 +9,7 @@ use Nette\PhpGenerator\PhpNamespace;
 use Nette\PhpGenerator\Printer;
 use Nette\PhpGenerator\PsrPrinter;
 use Roave\BetterReflection\Reflection\ReflectionClass;
+use Roave\BetterReflection\Reflection\ReflectionParameter;
 use Roave\BetterReflection\Reflection\ReflectionProperty;
 
 class BuilderGenerator
@@ -151,11 +152,11 @@ class BuilderGenerator
             }
 
             $generatedMethod = $this->builderClass->addMethod('with' . \substr($method->getName(), 3))
-                ->setBody('$this->entity->' . $method->getName() . '($value);' . "\n\n" . 'return $this;')
+                ->setBody('$this->entity->' . $method->getName() . '($' . $method->getParameters()[0]->getName() . ');' . "\n\n" . 'return $this;')
                 ->setFinal();
 
             /** @var Parameter $generatedParameter */
-            $generatedParameter = $generatedMethod->addParameter('value');
+            $generatedParameter = $generatedMethod->addParameter($method->getParameters()[0]->getName());
             if (null !== $type = $method->getParameters()[0]->getType()) {
                 $generatedParameter->setTypeHint((string) $type);
                 $generatedParameter->setNullable($type->allowsNull());
@@ -174,7 +175,7 @@ class BuilderGenerator
     private function addMutators(ReflectionClass $class): void
     {
         foreach ($class->getMethods() as $method) {
-            if ($method->isStatic() || !$method->isPublic() || $method->getNumberOfParameters() !== 1) {
+            if ($method->isStatic() || !$method->isPublic() || $method->getNumberOfParameters() === 0) {
                 continue;
             }
 
@@ -182,22 +183,28 @@ class BuilderGenerator
                 continue;
             }
 
+            $arguments = \implode(', ', \array_map(static function (ReflectionParameter $parameter) {
+                return '$' . $parameter->getName();
+            }, $method->getParameters()));
+
             $generatedMethod = $this->builderClass->addMethod($method->getName())
-                ->setBody('$this->entity = $this->entity->' . $method->getName() . '($value);' . "\n\n" . 'return $this;')
+                ->setBody('$this->entity = $this->entity->' . $method->getName() . '(' . $arguments . ');' . "\n\n" . 'return $this;')
                 ->setFinal();
 
-            /** @var Parameter $generatedParameter */
-            $generatedParameter = $generatedMethod->addParameter('value');
-            if (null !== $type = $method->getParameters()[0]->getType()) {
-                $generatedParameter->setTypeHint((string) $type);
-                $generatedParameter->setNullable($type->allowsNull());
-            }
+            foreach ($method->getParameters() as $parameter) {
+                /** @var Parameter $generatedParameter */
+                $generatedParameter = $generatedMethod->addParameter($parameter->getName());
+                if (null !== $type = $parameter->getType()) {
+                    $generatedParameter->setTypeHint((string) $type);
+                    $generatedParameter->setNullable($type->allowsNull());
+                }
 
-            if ($method->getParameters()[0]->isDefaultValueAvailable()) {
-                if ($method->getParameters()[0]->isDefaultValueConstant()) {
-                    $generatedParameter->setDefaultValue(new PhpLiteral($method->getParameters()[0]->getDefaultValueConstantName()));
-                } else {
-                    $generatedParameter->setDefaultValue($method->getParameters()[0]->getDefaultValue());
+                if ($parameter->isDefaultValueAvailable()) {
+                    if ($parameter->isDefaultValueConstant()) {
+                        $generatedParameter->setDefaultValue(new PhpLiteral($parameter->getDefaultValueConstantName()));
+                    } else {
+                        $generatedParameter->setDefaultValue($parameter->getDefaultValue());
+                    }
                 }
             }
         }

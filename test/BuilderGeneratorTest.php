@@ -285,9 +285,9 @@ class FooBuilderMethods implements Kelunik\Builders\Builder
         \$this->entity = new \Foo;
     }
 
-    final public function withBar(string \$value)
+    final public function withBar(string \$bar)
     {
-        \$this->entity->setBar(\$value);
+        \$this->entity->setBar(\$bar);
 
         return \$this;
     }
@@ -332,9 +332,9 @@ class FooBuilderMethods implements Kelunik\Builders\Builder
         \$this->entity = new \Foo;
     }
 
-    final public function withBar(?string \$value)
+    final public function withBar(?string \$bar)
     {
-        \$this->entity->setBar(\$value);
+        \$this->entity->setBar(\$bar);
 
         return \$this;
     }
@@ -385,9 +385,9 @@ class FooBuilderMethods implements \Kelunik\Builders\Builder
         \$this->entity = new \App\Foo;
     }
 
-    final public function withBar(?string \$value)
+    final public function withBar(?string \$bar)
     {
-        \$this->entity->setBar(\$value);
+        \$this->entity->setBar(\$bar);
 
         return \$this;
     }
@@ -432,9 +432,9 @@ class FooBuilderMethods implements Kelunik\Builders\Builder
         \$this->entity = new \Foo;
     }
 
-    final public function withBar(?string \$value = 'foo')
+    final public function withBar(?string \$bar = 'foo')
     {
-        \$this->entity->setBar(\$value);
+        \$this->entity->setBar(\$bar);
 
         return \$this;
     }
@@ -481,9 +481,9 @@ class FooBuilderMethods implements Kelunik\Builders\Builder
         \$this->entity = new \Foo;
     }
 
-    final public function withBar(?string \$value = Foo::X)
+    final public function withBar(?string \$bar = Foo::X)
     {
-        \$this->entity->setBar(\$value);
+        \$this->entity->setBar(\$bar);
 
         return \$this;
     }
@@ -531,9 +531,9 @@ class FooBuilderMethods implements Kelunik\Builders\Builder
         \$this->entity = new \Foo;
     }
 
-    final public function withBar(?string \$value = Foo::X)
+    final public function withBar(?string \$bar = Foo::X)
     {
-        \$this->entity->setBar(\$value);
+        \$this->entity->setBar(\$bar);
 
         return \$this;
     }
@@ -581,9 +581,9 @@ class FooBuilderMethods implements Kelunik\Builders\Builder
         \$this->entity = new \Foo;
     }
 
-    final public function withBar(string \$value)
+    final public function withBar(string \$bar)
     {
-        \$this->entity = \$this->entity->withBar(\$value);
+        \$this->entity = \$this->entity->withBar(\$bar);
 
         return \$this;
     }
