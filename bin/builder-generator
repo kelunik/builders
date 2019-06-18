@@ -45,6 +45,10 @@ $reflector = new ClassReflector($directoriesSourceLocator);
 $classes = $reflector->getAllClasses();
 
 foreach ($classes as $class) {
+    if (\strpos($class->getName(), $rootNamespace) !== 0) {
+        continue;
+    }
+
     $builderGenerator = new BuilderGenerator($class);
     if (!$builderGenerator->shouldGenerateBuilder()) {
         continue;
