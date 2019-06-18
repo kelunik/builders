@@ -547,4 +547,54 @@ class FooBuilderMethods implements Kelunik\Builders\Builder
 SOURCE
         );
     }
+
+    public function test_public_mutator(): void
+    {
+        $this->givenSource('Foo', <<<SOURCE
+            <?php
+
+            class Foo {
+                private \$bar;
+
+                public function withBar(string \$bar): void
+                {
+                    \$clone = clone \$this;
+                    \$clone->bar = \$bar;
+                    
+                    return \$clone;
+                }
+            }
+SOURCE
+        );
+
+        $this->whenBuilderIsBuilt();
+
+        $this->thenGeneratedCodeIs(<<<SOURCE
+<?php
+
+class FooBuilderMethods implements Kelunik\Builders\Builder
+{
+    private \$entity;
+
+    public function __construct()
+    {
+        \$this->entity = new Foo;
+    }
+
+    final public function withBar(string \$value)
+    {
+        \$this->entity = \$this->entity->withBar(\$value);
+
+        return \$this;
+    }
+
+    final public function build(): Foo
+    {
+        return \$this->entity;
+    }
+}
+
+SOURCE
+        );
+    }
 }

@@ -44,6 +44,25 @@ class BuilderGenerator
         return "<?php\n\n" . $this->printer->printNamespace($namespace);
     }
 
+    public function getBuilderName(): string
+    {
+        return $this->class->getNamespaceName() . '\\' . $this->getBuilderSimpleName();
+    }
+
+    public function shouldGenerateBuilder(): bool
+    {
+        if (\strpos($this->class->getName(),
+                'BuilderMethods') === \strlen($this->class->getName()) - \strlen('BuilderMethods')) {
+            return false;
+        }
+
+        if (\strpos($this->class->getName(), 'Builder') === \strlen($this->class->getName()) - \strlen('Builder')) {
+            return false;
+        }
+
+        return true;
+    }
+
     private function getBuilderSimpleName(): string
     {
         return $this->class->getShortName() . 'BuilderMethods';
@@ -58,13 +77,14 @@ class BuilderGenerator
     {
         // TODO Add support for classes without default constructor
         $this->builderClass->addMethod('__construct')
-            ->setBody('$this->entity = new ' . $this->class->getName() . ";");
+            ->setBody('$this->entity = new ' . $this->class->getName() . ';');
     }
 
     private function addProperties(ReflectionClass $class): void
     {
         $this->addPublicProperties($class);
         $this->addSetters($class);
+        $this->addMutators($class);
     }
 
     private function addPublicProperties(ReflectionClass $class): void
@@ -99,12 +119,15 @@ class BuilderGenerator
             if (\strpos($type, 'null|') === 0) {
                 $type = \substr($type, 5);
                 $nullable = true;
-            } else if (\strpos($type, '|null') === \strlen($type) - 5) {
-                $type = \substr($type, 0, -5);
-                $nullable = true;
+            } else {
+                if (\strpos($type, '|null') === \strlen($type) - 5) {
+                    $type = \substr($type, 0, -5);
+                    $nullable = true;
+                }
             }
 
-            if (\in_array(\strtolower($type), ['int', 'bool', 'string', 'float', 'iterable', 'callable', 'array', 'object', 'void'], true)) {
+            if (\in_array(\strtolower($type),
+                ['int', 'bool', 'string', 'float', 'iterable', 'callable', 'array', 'object', 'void'], true)) {
                 return ($nullable ? '?' : '') . $type;
             }
 
@@ -148,29 +171,43 @@ class BuilderGenerator
         }
     }
 
+    private function addMutators(ReflectionClass $class): void
+    {
+        foreach ($class->getMethods() as $method) {
+            if ($method->isStatic() || !$method->isPublic() || $method->getNumberOfParameters() !== 1) {
+                continue;
+            }
+
+            if (0 !== \strpos($method->getName(), 'with')) {
+                continue;
+            }
+
+            $generatedMethod = $this->builderClass->addMethod($method->getName())
+                ->setBody('$this->entity = $this->entity->' . $method->getName() . '($value);' . "\n\n" . 'return $this;')
+                ->setFinal();
+
+            /** @var Parameter $generatedParameter */
+            $generatedParameter = $generatedMethod->addParameter('value');
+            if (null !== $type = $method->getParameters()[0]->getType()) {
+                $generatedParameter->setTypeHint((string) $type);
+                $generatedParameter->setNullable($type->allowsNull());
+            }
+
+            if ($method->getParameters()[0]->isDefaultValueAvailable()) {
+                if ($method->getParameters()[0]->isDefaultValueConstant()) {
+                    $generatedParameter->setDefaultValue(new PhpLiteral($method->getParameters()[0]->getDefaultValueConstantName()));
+                } else {
+                    $generatedParameter->setDefaultValue($method->getParameters()[0]->getDefaultValue());
+                }
+            }
+        }
+    }
+
     private function addBuildMethod(): void
     {
         $this->builderClass->addMethod('build')
             ->setBody('return $this->entity;')
             ->setReturnType($this->class->getName())
             ->setFinal();
-    }
-
-    public function getBuilderName(): string
-    {
-        return $this->class->getNamespaceName() . '\\' . $this->getBuilderSimpleName();
-    }
-
-    public function shouldGenerateBuilder(): bool
-    {
-        if (\strpos($this->class->getName(), 'BuilderMethods') === \strlen($this->class->getName()) - \strlen('BuilderMethods')) {
-            return false;
-        }
-
-        if (\strpos($this->class->getName(), 'Builder') === \strlen($this->class->getName()) - \strlen('Builder')) {
-            return false;
-        }
-
-        return true;
     }
 }
