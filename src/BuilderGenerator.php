@@ -77,7 +77,7 @@ class BuilderGenerator
     {
         // TODO Add support for classes without default constructor
         $this->builderClass->addMethod('__construct')
-            ->setBody('$this->entity = new ' . $this->class->getName() . ';');
+            ->setBody('$this->entity = new \\' . $this->class->getName() . ';');
     }
 
     private function addProperties(ReflectionClass $class): void

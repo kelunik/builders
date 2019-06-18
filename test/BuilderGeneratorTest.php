@@ -49,7 +49,7 @@ class FooBuilderMethods implements Kelunik\Builders\Builder
 
     public function __construct()
     {
-        \$this->entity = new Foo;
+        \$this->entity = new \Foo;
     }
 
     final public function withBar(\$value)
@@ -118,7 +118,7 @@ class FooBuilderMethods implements Kelunik\Builders\Builder
 
     public function __construct()
     {
-        \$this->entity = new Foo;
+        \$this->entity = new \Foo;
     }
 
     final public function withBar(string \$value)
@@ -161,7 +161,7 @@ class FooBuilderMethods implements Kelunik\Builders\Builder
 
     public function __construct()
     {
-        \$this->entity = new Foo;
+        \$this->entity = new \Foo;
     }
 
     final public function withBar(?string \$value)
@@ -203,7 +203,7 @@ class FooBuilderMethods implements Kelunik\Builders\Builder
 
     public function __construct()
     {
-        \$this->entity = new Foo;
+        \$this->entity = new \Foo;
     }
 
     final public function build(): Foo
@@ -242,7 +242,7 @@ class FooBuilderMethods implements \Kelunik\Builders\Builder
 
     public function __construct()
     {
-        \$this->entity = new App\Foo;
+        \$this->entity = new \App\Foo;
     }
 
     final public function build(): App\Foo
@@ -282,7 +282,7 @@ class FooBuilderMethods implements Kelunik\Builders\Builder
 
     public function __construct()
     {
-        \$this->entity = new Foo;
+        \$this->entity = new \Foo;
     }
 
     final public function withBar(string \$value)
@@ -329,7 +329,7 @@ class FooBuilderMethods implements Kelunik\Builders\Builder
 
     public function __construct()
     {
-        \$this->entity = new Foo;
+        \$this->entity = new \Foo;
     }
 
     final public function withBar(?string \$value)
@@ -382,7 +382,7 @@ class FooBuilderMethods implements \Kelunik\Builders\Builder
 
     public function __construct()
     {
-        \$this->entity = new App\Foo;
+        \$this->entity = new \App\Foo;
     }
 
     final public function withBar(?string \$value)
@@ -429,7 +429,7 @@ class FooBuilderMethods implements Kelunik\Builders\Builder
 
     public function __construct()
     {
-        \$this->entity = new Foo;
+        \$this->entity = new \Foo;
     }
 
     final public function withBar(?string \$value = 'foo')
@@ -478,7 +478,7 @@ class FooBuilderMethods implements Kelunik\Builders\Builder
 
     public function __construct()
     {
-        \$this->entity = new Foo;
+        \$this->entity = new \Foo;
     }
 
     final public function withBar(?string \$value = Foo::X)
@@ -528,7 +528,7 @@ class FooBuilderMethods implements Kelunik\Builders\Builder
 
     public function __construct()
     {
-        \$this->entity = new Foo;
+        \$this->entity = new \Foo;
     }
 
     final public function withBar(?string \$value = Foo::X)
@@ -578,7 +578,7 @@ class FooBuilderMethods implements Kelunik\Builders\Builder
 
     public function __construct()
     {
-        \$this->entity = new Foo;
+        \$this->entity = new \Foo;
     }
 
     final public function withBar(string \$value)
