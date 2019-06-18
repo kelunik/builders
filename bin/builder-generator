@@ -8,18 +8,19 @@ use Roave\BetterReflection\SourceLocator\Type\DirectoriesSourceLocator;
 
 $rootPath = '';
 
-$classLoader = (function () use (&$rootPath) {
-    if (file_exists(dirname(__DIR__, 3) . "/autoload.php")) {
-        $autoloadPath = dirname(__DIR__, 3) . "/autoload.php";
+$classLoader = (static function () use (&$rootPath) {
+    if (file_exists(dirname(__DIR__, 3) . '/autoload.php')) {
+        $autoloadPath = dirname(__DIR__, 3) . '/autoload.php';
         $rootPath = dirname(__DIR__, 4);
-    } else if (file_exists(dirname(__DIR__) . "/vendor/autoload.php")) {
-        $autoloadPath = dirname(__DIR__) . "/vendor/autoload.php";
+    } elseif (file_exists(dirname(__DIR__) . '/vendor/autoload.php')) {
+        $autoloadPath = dirname(__DIR__) . '/vendor/autoload.php';
         $rootPath = dirname(__DIR__);
     } else {
-        fwrite(STDERR, "Could not locate autoload.php" . PHP_EOL);
+        fwrite(STDERR, 'Could not locate autoload.php' . PHP_EOL);
         exit(1);
     }
 
+    /** @noinspection PhpIncludeInspection */
     return require $autoloadPath;
 })();
 
