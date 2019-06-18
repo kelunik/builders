@@ -1,6 +1,6 @@
 <?php
 
-use Kelunik\Builders\Builder;
+namespace Kelunik\Builders;
 
 function a(Builder $builder)
 {
