@@ -61,6 +61,10 @@ class BuilderGenerator
             return false;
         }
 
+        if (!$this->class->isInstantiable()) {
+            return false;
+        }
+
         return true;
     }
 
